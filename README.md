@@ -4,13 +4,41 @@ API própria para organizar uma biblioteca pessoal de animes, acompanhar episód
 
 **Para avaliar o projeto, basta executar o backend com MySQL.** Frontend, IDE e integração MyAnimeList são opcionais. Escolha uma forma de execução e um cliente HTTP; não é necessário instalar todas as ferramentas citadas.
 
+## Guia rápido — backend no Windows
+
+1. Instale o **JDK 21**, configure `JAVA_HOME`/`PATH` e confira `java -version` e `javac -version`.
+2. Inicie o **MySQL** em `localhost:3306`. Execute [backend/database/init.sql](backend/database/init.sql) no Workbench ou no cliente MySQL para criar `anime_mood` sem apagar dados existentes.
+3. Na raiz do projeto, abra o **PowerShell** e informe as credenciais da sua própria conta MySQL:
+
+```powershell
+$env:DB_USER = Read-Host 'Usuário MySQL'
+$dbCredential = Get-Credential -UserName $env:DB_USER -Message 'Credenciais MySQL'
+$env:DB_PASSWORD = $dbCredential.GetNetworkCredential().Password
+Set-Location backend
+.\mvnw.cmd spring-boot:run
+```
+
+O **Maven Wrapper** baixa o Maven e as dependências na primeira execução; não é necessário Maven global. O projeto não carrega `.env` automaticamente. `MAL_CLIENT_ID`(MAL = My Anime List😅) é opcional para executar e avaliar o CRUD; pesquisa, detalhes e sorteio global do MyAnimeList exigem um Client ID próprio.
+
+4. Com o backend iniciado, teste em outro terminal:
+
+```powershell
+Invoke-RestMethod -Uri 'http://localhost:8080/api/hello'
+```
+
+Resposta esperada: HTTP **200**, com o texto `Anime Mood API esta on!`, sem autenticação. Ao encerrar a execução, remova a senha do ambiente com `Remove-Item Env:DB_PASSWORD` no primeiro terminal e descarte a variável com `Remove-Variable dbCredential`.
+
+As seções abaixo mantêm as instruções completas de banco, permissões, variáveis, outras plataformas e IDEs.
+
 ## Índice
+
+- [Guia rápido — backend no Windows](#guia-rápido--backend-no-windows)
 
 1. [Apresentação do Anime Mood](#1-apresentação-do-anime-mood)
 2. [Funcionalidades principais](#2-funcionalidades-principais)
-3. [Tecnologias que utilizei](#3-tecnologias-utilizadas)
-4. [Os pre-requisitos](#4-pré-requisitos)
-5. [Como voce pode baixar o projeto](#5-como-baixar-o-projeto)
+3. [Tecnologias utilizadas](#3-tecnologias-utilizadas)
+4. [Pré-requisitos](#4-pré-requisitos)
+5. [Como baixar o projeto](#5-como-baixar-o-projeto)
 6. [Configuração do MySQL](#6-configuração-do-mysql)
 7. [Configuração das variáveis de ambiente](#7-configuração-das-variáveis-de-ambiente)
 8. [Como executar o backend](#8-como-executar-o-backend)
@@ -18,14 +46,14 @@ API própria para organizar uma biblioteca pessoal de animes, acompanhar episód
 10. [Como testar a API](#10-como-testar-a-api)
 11. [Integração opcional com MyAnimeList](#11-integração-opcional-com-myanimelist)
 12. [Testes automatizados](#12-testes-automatizados)
-13. [Tabela dos endpoints](#13-tabela-de-endpoints)
+13. [Tabela de endpoints](#13-tabela-de-endpoints)
 14. [Solução de problemas comuns](#14-solução-de-problemas-comuns)
 15. [Estrutura do repositório](#15-estrutura-do-repositório)
-16. [Documentação](#16-documentação-acadêmica)
+16. [Documentação técnica e entrega acadêmica](#16-documentação-técnica-e-entrega-acadêmica)
 
 ## 1. Apresentação do Anime Mood
 
-Desenvolvido para a materia de **Arquitetura e Desenvolvimento de APIs**, o Anime Mood disponibiliza endpoints próprios para criar, consultar, atualizar e excluir animes pessoais, com autenticação e persistência real.
+Desenvolvido para a disciplina de **Arquitetura e Desenvolvimento de APIs**, o Anime Mood disponibiliza endpoints próprios para criar, consultar, atualizar e excluir animes pessoais, com autenticação e persistência real.
 
 MyAnimeList complementa essa API com pesquisa, detalhes e sorteio global; não substitui o CRUD próprio. A interface é uma aplicação de organização e descoberta, sem streaming ou leitura de conteúdo.
 
@@ -38,7 +66,7 @@ MyAnimeList complementa essa API com pesquisa, detalhes e sorteio global; não s
 - Com MAL configurado: pesquisa, detalhes, importação de metadados e sorteio global com mood opcional.
 - Frontend opcional com filtros locais, formulários e apresentação gacha com opção de pular e movimento reduzido.
 
-Títulos mantêm o campo principal `title` do MAL; títulos salvos não são renomeados. Sinopses permanecem originais, inclusive em inglês. Gêneros/metadados usam o dicionário Java. Por enquanto não há serviço de tradução .
+Títulos mantêm o campo principal `title` do MAL; títulos salvos não são renomeados. Sinopses permanecem originais, inclusive em inglês. Gêneros/metadados usam o dicionário Java. Não há serviço de tradução automática.
 
 ## 3. Tecnologias utilizadas
 
@@ -51,6 +79,8 @@ Títulos mantêm o campo principal `title` do MAL; títulos salvos não são ren
 | Frontend opcional | React, TypeScript, Vite, Tailwind CSS, React Router, Lucide React e Fetch |
 | Testes | JUnit, Spring Boot Test, MockMvc/Mockito, Vitest, Testing Library e script HTTP Node |
 | Integração opcional | API oficial MyAnimeList v2 via RestClient no backend |
+
+Não há Docker, Swagger/OpenAPI, JWT ou servidor Node de aplicação configurados. Os contratos estão neste guia e no [relatório técnico](docs/RELATORIO_TECNICO.md).
 
 ## 4. Pré-requisitos
 
@@ -77,18 +107,18 @@ Ambos devem apontar para JDK 21. Configure `JAVA_HOME` para a pasta do JDK, sem 
 
 ## 5. Como baixar o projeto
 
-Após a publicação do código completo, use o remoto configurado no projeto.
+Clone o repositório ou baixe o código em ZIP.
 
 **Terminal com Git — Windows, Linux ou macOS:**
 
 ```sh
-git clone URL_PUBLICA_DO_REPOSITORIO Lista-Anime
+git clone https://github.com/GabrielMGG/Lista-Anime.git Lista-Anime
 cd Lista-Anime
 ```
 
 Alternativa: no GitHub, **Code > Download ZIP**, extrair e abrir a pasta com `backend/`, `frontend/` e `docs/`. O nome extraído pode variar; ajuste a navegação.
 
-Os exemplos partem dessa raiz, salvo indicação contrária. Não copie configurações privadas do autor. Se houver falha de acesso ao remoto, confirme URL/permissões com o responsável pela publicação.
+Os exemplos partem dessa raiz, salvo indicação contrária. Não copie configurações privadas do autor. Se houver falha de acesso ao remoto, confirme a URL e as permissões de acesso ao repositório.
 
 ## 6. Configuração do MySQL
 
@@ -371,7 +401,7 @@ Use apenas IDs criados na própria avaliação. A conta permanece porque não h�
 
 ### Insomnia
 
-Importe [Anime-Mood.insomnia.json](docs/insomnia/Anime-Mood.insomnia.json). Preencha localmente base_url, api_email e api_password; após o POST, copie o id para anime_id. O arquivo compartilhado tem senha vazia. O [roteiro](docs/insomnia/README.md) descreve a ordem e exemplos de 400/404/409. A coleção foi validada estruturalmente; não se declara uma importação já executada no Insomnia.
+Importe [Anime-Mood.insomnia.json](docs/insomnia/Anime-Mood.insomnia.json). Preencha localmente base_url, api_email e api_password; após o POST, copie o id para anime_id. O arquivo compartilhado tem senha vazia. O [roteiro](docs/insomnia/README.md) descreve a ordem e exemplos de 400/404/409. A coleção foi validada estruturalmente. No teste manual informado pelo usuário no Insomnia, o envio de humor inválido retornou **HTTP 409**, embora o esperado fosse **400**. Trata-se de uma divergência registrada; esta revisão não repetiu a requisição nem alterou a API.
 
 ### Postman
 
@@ -552,7 +582,7 @@ O script cria conta QA e anime, verifica 12 requisições e remove somente seu p
 
 ### Resultados já registrados
 
-Na validação acadêmica de **26/10/2026**, documentada em [EVIDENCIAS_TESTES.md](docs/EVIDENCIAS_TESTES.md): 73 testes Java aprovados com JDK 21/MySQL e pacote gerado; 36 testes frontend, TypeScript/build e 12 requisições reais aprovados. **Esta revisão do README não reexecutou as suítes.** Os dez testes históricos via PowerShell são relatos manuais separados, não dez testes JUnit. Importação manual no Insomnia e reprodução em outro computador não estão declaradas como já realizadas.
+Na validação acadêmica de **26/10/2026**, documentada em [EVIDENCIAS_TESTES.md](docs/EVIDENCIAS_TESTES.md): 73 testes Java aprovados com JDK 21/MySQL e pacote gerado; 36 testes frontend, TypeScript/build e 12 requisições reais aprovados. **Esta revisão do README não reexecutou as suítes.** Os dez testes históricos via PowerShell são relatos manuais separados, não dez testes JUnit. O teste manual de humor inválido no Insomnia foi informado pelo usuário e retornou 409, em divergência com o esperado 400; não integra os totais anteriores. A execução completa da coleção e a reprodução em outro computador não estão declaradas como realizadas.
 
 ## 13. Tabela de endpoints
 
@@ -567,7 +597,7 @@ Base: `http://localhost:8080`. A tabela descreve os controllers reais; permitir 
 | POST | `/api/anime-list` | Criar item pessoal; Basic e AnimeRequest | 201 AnimeResponse | 400; 401 |
 | PUT | `/api/anime-list/{id}` | Atualização completa; Basic, ID e AnimeRequest | 200 AnimeResponse | 400; 401; 404 |
 | DELETE | `/api/anime-list/{id}` | Excluir item pessoal; Basic e ID | 204 vazio | 400 ID inválido; 401; 404 |
-| POST | `/api/draws` | Sorteio global; Basic, query mood opcional, sem JSON | 201 DrawResponse | 400; 401; 404 sem candidatos; 502/503/504 externos |
+| POST | `/api/draws` | Sorteio global; Basic, query mood opcional, sem JSON | 201 DrawResponse | 400 esperado para humor inválido (409 observado no Insomnia); 401; 404 sem candidatos; 502/503/504 externos |
 | GET | `/api/draws/history` | Histórico pessoal, recente primeiro; Basic | 200 array DrawResponse | 401 |
 | GET | `/api/catalog/anime` | Pesquisa MAL; Basic, q de 2–100 caracteres, offset opcional 0–10000 | 200 CatalogSearchResponse | 400; 401; 502/503/504 externos |
 | GET | `/api/catalog/anime/{malId}` | Detalhes MAL; Basic, malId positivo | 200 CatalogAnimeResponse | 400; 401; 404; 502/503/504 externos |
