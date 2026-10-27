@@ -52,8 +52,6 @@ Títulos mantêm o campo principal `title` do MAL; títulos salvos não são ren
 | Testes | JUnit, Spring Boot Test, MockMvc/Mockito, Vitest, Testing Library e script HTTP Node |
 | Integração opcional | API oficial MyAnimeList v2 via RestClient no backend |
 
-Não há Docker, Swagger/OpenAPI, JWT ou servidor Node de aplicação configurados. Os contratos estão neste guia e no [relatório técnico](docs/RELATORIO_TECNICO.md).
-
 ## 4. Pré-requisitos
 
 | Requisito | Quando é necessário |
