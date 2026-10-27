@@ -1,0 +1,28 @@
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+
+import { type AnimeRequest, type LocalizationView, moods, statuses } from '../types';
+import { ErrorMessage } from './UI';
+import { displayGenres, LocalizedSynopsis } from './LocalizedText';
+export function AnimeForm({ initial, localization, onSave, busy, error }: { initial?: AnimeRequest; localization?: LocalizationView; onSave: (data: AnimeRequest) => Promise<void>; busy: boolean; error: string }) {
+  const [total, setTotal] = useState(String(initial?.totalEpisodes ?? 0));
+  const [watched, setWatched] = useState(String(initial?.episodesWatched ?? 0));
+  const [validation, setValidation] = useState('');
+  const completed = Number(total) > 0 && Number(total) === Number(watched);
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); const form = new FormData(event.currentTarget);
+    const nullable = (key: string) => String(form.get(key) || '').trim() || null;
+    const totalEpisodes = Number(total); const episodesWatched = Number(watched);
+    const score = nullable('score') === null ? null : Number(form.get('score'));
+    const title = String(form.get('title') || '').trim();
+    if (title.length > 200 || (nullable('coverUrl')?.length ?? 0) > 255 || (nullable('genres')?.length ?? 0) > 255) {
+      setValidation('Os dados excedem os limites existentes: título até 200 caracteres; capa e gêneros até 255. Revise esses campos antes de salvar.'); return;
+    }
+    if (!title || !Number.isInteger(totalEpisodes) || !Number.isInteger(episodesWatched) || totalEpisodes < 0 || episodesWatched < 0 || totalEpisodes > 2147483647 || episodesWatched > 2147483647 || (totalEpisodes > 0 && episodesWatched > totalEpisodes) || (score !== null && (!Number.isInteger(score) || score < 0 || score > 10))) { setValidation('Revise os dados. Os episódios devem ser inteiros não negativos, assistidos não pode superar um total positivo e a nota deve estar entre 0 e 10.'); return; }
+    const coverUrl = nullable('coverUrl');
+    if (coverUrl && !/^https?:\/\//i.test(coverUrl)) { setValidation('A capa deve usar um endereço http:// ou https://.'); return; }
+    setValidation('');
+    await onSave({ title, coverUrl, synopsis: nullable('synopsis'), genres: nullable('genres'), totalEpisodes, episodesWatched, status: completed ? 'COMPLETED' : form.get('status') as AnimeRequest['status'], mood: nullable('mood') as AnimeRequest['mood'], score, notes: nullable('notes') });
+  }
+  return <form className="anime-form panel" onSubmit={submit}>{localization && <section className="localized-form-preview"><h2>{initial?.title}</h2><p className="field-help">{displayGenres({ genres: initial?.genres, localization }).join(', ')}</p><LocalizedSynopsis original={initial?.synopsis} localization={localization} /></section>}<details className="original-metadata" open={!localization}><summary>Editar dados originais</summary><fieldset disabled={busy}><legend>Dados do anime</legend><div className="form-grid"><label className="span-two">Título <span className="required">*</span><input name="title" required maxLength={200} defaultValue={initial?.title} placeholder="Título do anime" /></label><label className="span-two">URL da capa<input name="coverUrl" type="url" maxLength={255} defaultValue={initial?.coverUrl || ''} placeholder="https://…" /><small>Uma imagem pública em HTTP ou HTTPS. Este projeto não faz upload.</small></label><label className="span-two">Sinopse original<textarea name="synopsis" rows={4} defaultValue={initial?.synopsis || ''} placeholder="Sobre o que é este anime?" /></label><label className="span-two">Gêneros originais<input name="genres" maxLength={255} defaultValue={initial?.genres || ''} placeholder="Aventura, fantasia, slice of life…" /></label></div></fieldset></details><fieldset disabled={busy}><legend>Seu acompanhamento</legend><div className="form-grid"><label>Total de episódios <span className="required">*</span><input type="number" min={0} max={2147483647} step={1} required value={total} onChange={e => setTotal(e.target.value)} /><small>Use 0 quando o total for desconhecido.</small></label><label>Episódios assistidos <span className="required">*</span><input type="number" min={0} max={Number(total) > 0 ? Number(total) : 2147483647} step={1} required value={watched} onChange={e => setWatched(e.target.value)} /></label><label>Status <span className="required">*</span><select name="status" defaultValue={initial?.status || 'PLAN_TO_WATCH'} required>{Object.entries(statuses).map(([key, text]) => <option key={key} value={key}>{text}</option>)}</select></label><label>Humor<select name="mood" defaultValue={initial?.mood || ''}><option value="">Sem humor definido</option>{Object.entries(moods).map(([key, value]) => <option key={key} value={key}>{value.label}</option>)}</select></label><label>Minha nota<input name="score" type="number" min={0} max={10} step={1} defaultValue={initial?.score ?? ''} placeholder="0 a 10 (opcional)" /></label><label className="span-two">Minhas anotações<textarea name="notes" rows={3} defaultValue={initial?.notes || ''} placeholder="Anotações pessoais" /></label></div>{completed && <p className="completion-note">Todos os episódios vistos: o status será salvo como Concluído.</p>}</fieldset>{(validation || error) && <ErrorMessage message={validation || error} />}<div className="form-actions"><Link className="button secondary" to={initial && 'id' in initial ? `/animes/${initial.id}` : '/'}>Cancelar</Link><button className="button primary" disabled={busy}>{busy ? 'Salvando…' : 'Salvar anime'}</button></div></form>;
+}

@@ -5,7 +5,7 @@
 
 # Maven
 target/
-.mvn/wrapper/maven-wrapper.jar
+!**/.mvn/wrapper/maven-wrapper.jar
 
 # IDEs
 .idea/
@@ -16,3 +16,50 @@ target/
 .env
 .env.*
 !.env.example
+
+# Configurações locais e credenciais
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+**/application-secrets.properties
+**/application-secrets.yml
+**/application-secrets.yaml
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+.run/
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+
+# Logs, temporários e dumps
+*.log
+logs/
+*.hprof
+*.dump
+*.sql.gz
+*.bak
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Dependências e saídas do frontend
+node_modules/
+dist/
+coverage/
+
+# Entrega acadêmica privada e arquivos temporários do Office
+/docs/Relatorio_Final_Anime_Mood_Uninter.*
+/docs/privado/
+/privado/
+~$*.docx
+~$*.xlsx

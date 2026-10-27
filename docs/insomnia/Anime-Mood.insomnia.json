@@ -1,0 +1,779 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-10-26T23:07:40Z",
+  "__export_source": "anime-mood.academic-collection",
+  "resources": [
+    {
+      "_id": "__WORKSPACE_ID__",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Anime Mood — avaliação acadêmica",
+      "description": "API própria com HTTP Basic. Configure as variáveis localmente; execute manualmente em ordem. Nenhuma credencial real está incluída. Copie o ID do POST para anime_id antes de GET/PUT/DELETE. Não exclua dados preexistentes.",
+      "scope": "collection"
+    },
+    {
+      "_id": "__BASE_ENVIRONMENT_ID__",
+      "_type": "environment",
+      "parentId": "__WORKSPACE_ID__",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080/api",
+        "api_name": "Avaliador Anime Mood",
+        "api_email": "avaliacao.anime@example.com",
+        "api_password": "",
+        "anime_id": 0,
+        "missing_id": 999999999,
+        "mal_id": 20,
+        "mood": "ACTION",
+        "frontend_origin": "http://localhost:5173"
+      },
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false
+    },
+    {
+      "_id": "__request_group_1__",
+      "_type": "request_group",
+      "parentId": "__WORKSPACE_ID__",
+      "name": "01 API própria e CRUD",
+      "description": "Requisições manuais; consulte docs/insomnia/README.md.",
+      "environment": {},
+      "metaSortKey": 2
+    },
+    {
+      "_id": "__request_group_2__",
+      "_type": "request_group",
+      "parentId": "__WORKSPACE_ID__",
+      "name": "02 Validação e erros",
+      "description": "Requisições manuais; consulte docs/insomnia/README.md.",
+      "environment": {},
+      "metaSortKey": 3
+    },
+    {
+      "_id": "__request_group_3__",
+      "_type": "request_group",
+      "parentId": "__WORKSPACE_ID__",
+      "name": "03 MyAnimeList opcional",
+      "description": "Requisições manuais; consulte docs/insomnia/README.md.",
+      "environment": {},
+      "metaSortKey": 4
+    },
+    {
+      "_id": "__request_1__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "00 Disponibilidade pública — 200",
+      "method": "GET",
+      "url": "{{ _.base_url }}/hello",
+      "description": "Resposta esperada: HTTP 200. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {},
+      "metaSortKey": 1,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_2__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "01 Cadastrar usuário — 201",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "description": "Resposta esperada: HTTP 201. Defina uma senha local de pelo menos 8 caracteres e e-mail exclusivo antes de enviar. Não há endpoint de exclusão de usuário.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"{{ _.api_name }}\",\n  \"email\": \"{{ _.api_email }}\",\n  \"password\": \"{{ _.api_password }}\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 2,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_3__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "02 Listar sem autenticação — 401",
+      "method": "GET",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 401. Requisição sem autenticação e sem cookies; demonstra rota protegida.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {},
+      "metaSortKey": 3,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_4__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "03 Listar biblioteca — 200",
+      "method": "GET",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 200. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 4,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_5__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "04 Criar anime próprio — 201",
+      "method": "POST",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 201. Copie o campo id da resposta para anime_id. Esse ID identifica somente a fixture criada por você.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Anime de avaliação\",\n  \"coverUrl\": null,\n  \"synopsis\": \"Original synopsis supplied for the academic CRUD demonstration.\",\n  \"genres\": \"Adventure\",\n  \"totalEpisodes\": 12,\n  \"episodesWatched\": 0,\n  \"status\": \"PLAN_TO_WATCH\",\n  \"mood\": \"ACTION\",\n  \"score\": null,\n  \"notes\": \"Registro próprio de avaliação; não editar dados anteriores.\"\n}"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 5,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_6__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "05 Consultar anime próprio — 200",
+      "method": "GET",
+      "url": "{{ _.base_url }}/anime-list/{{ _.anime_id }}",
+      "description": "Resposta esperada: HTTP 200. Exige anime_id devolvido pelo POST.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 6,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_7__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "06 Atualizar e concluir — 200",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/anime-list/{{ _.anime_id }}",
+      "description": "Resposta esperada: HTTP 200. PUT completo. Ao igualar 12 episódios, o backend deve retornar status COMPLETED. Preserva todos os campos originais enviados.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Anime de avaliação\",\n  \"coverUrl\": null,\n  \"synopsis\": \"Original synopsis supplied for the academic CRUD demonstration.\",\n  \"genres\": \"Adventure\",\n  \"totalEpisodes\": 12,\n  \"episodesWatched\": 12,\n  \"status\": \"WATCHING\",\n  \"mood\": \"ACTION\",\n  \"score\": 8,\n  \"notes\": \"Registro próprio de avaliação; não editar dados anteriores.\"\n}"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 7,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_8__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "07 Histórico pessoal — 200",
+      "method": "GET",
+      "url": "{{ _.base_url }}/draws/history",
+      "description": "Resposta esperada: HTTP 200. Pode estar vazio. Não existe exclusão de histórico.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 8,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_9__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "08 Excluir somente o anime de avaliação — 204",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/anime-list/{{ _.anime_id }}",
+      "description": "Resposta esperada: HTTP 204. Execute por último. Confirme que anime_id pertence ao POST desta avaliação. Não usar IDs de dados preexistentes.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 9,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_10__",
+      "_type": "request",
+      "parentId": "__request_group_1__",
+      "name": "09 Consultar após excluir — 404",
+      "method": "GET",
+      "url": "{{ _.base_url }}/anime-list/{{ _.anime_id }}",
+      "description": "Resposta esperada: HTTP 404. Reutilize o ID próprio excluído, sem recriá-lo antes desta consulta.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 10,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_11__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "10 Título obrigatório — 400",
+      "method": "POST",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 400. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"\",\n  \"coverUrl\": null,\n  \"synopsis\": \"Original synopsis supplied for the academic CRUD demonstration.\",\n  \"genres\": \"Adventure\",\n  \"totalEpisodes\": 12,\n  \"episodesWatched\": 0,\n  \"status\": \"PLAN_TO_WATCH\",\n  \"mood\": \"ACTION\",\n  \"score\": null,\n  \"notes\": \"Registro próprio de avaliação; não editar dados anteriores.\"\n}"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 11,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_12__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "11 Episódios acima do total — 400",
+      "method": "POST",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 400. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Anime de avaliação\",\n  \"coverUrl\": null,\n  \"synopsis\": \"Original synopsis supplied for the academic CRUD demonstration.\",\n  \"genres\": \"Adventure\",\n  \"totalEpisodes\": 12,\n  \"episodesWatched\": 13,\n  \"status\": \"PLAN_TO_WATCH\",\n  \"mood\": \"ACTION\",\n  \"score\": null,\n  \"notes\": \"Registro próprio de avaliação; não editar dados anteriores.\"\n}"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 12,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_13__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "12 E-mail duplicado — 409",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "description": "Resposta esperada: HTTP 409. Execute após o cadastro bem-sucedido, com o mesmo api_email. Senha permanece somente no ambiente local.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"{{ _.api_name }}\",\n  \"email\": \"{{ _.api_email }}\",\n  \"password\": \"{{ _.api_password }}\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 13,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_14__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "13 Recurso inexistente — 404",
+      "method": "GET",
+      "url": "{{ _.base_url }}/anime-list/{{ _.missing_id }}",
+      "description": "Resposta esperada: HTTP 404. Use um identificador inexistente na biblioteca de avaliação; se já existir, escolha outro.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 14,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_15__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "14 Enum inválido — 400",
+      "method": "POST",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 400. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Anime de avaliação\",\n  \"coverUrl\": null,\n  \"synopsis\": \"Original synopsis supplied for the academic CRUD demonstration.\",\n  \"genres\": \"Adventure\",\n  \"totalEpisodes\": 12,\n  \"episodesWatched\": 0,\n  \"status\": \"INVALID_STATUS\",\n  \"mood\": \"ACTION\",\n  \"score\": null,\n  \"notes\": \"Registro próprio de avaliação; não editar dados anteriores.\"\n}"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 15,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_16__",
+      "_type": "request",
+      "parentId": "__request_group_2__",
+      "name": "15 JSON ilegível — 400",
+      "method": "POST",
+      "url": "{{ _.base_url }}/anime-list",
+      "description": "Resposta esperada: HTTP 400. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\"title\":"
+      },
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 16,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_17__",
+      "_type": "request",
+      "parentId": "__request_group_3__",
+      "name": "16 Pesquisa MAL opcional — 200 ou 503",
+      "method": "GET",
+      "url": "{{ _.base_url }}/catalog/anime?q=Naruto&offset=0",
+      "description": "Resposta esperada: HTTP 200 com Client ID válido; 503 sem configuração. O Client ID fica somente no backend. A ausência dele não impede os testes CRUD obrigatórios.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 17,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_18__",
+      "_type": "request",
+      "parentId": "__request_group_3__",
+      "name": "17 Detalhes MAL opcionais",
+      "method": "GET",
+      "url": "{{ _.base_url }}/catalog/anime/{{ _.mal_id }}",
+      "description": "Resposta esperada: HTTP 200; 404; 502/503/504 externos. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 18,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_19__",
+      "_type": "request",
+      "parentId": "__request_group_3__",
+      "name": "18 Sorteio global opcional com mood",
+      "method": "POST",
+      "url": "{{ _.base_url }}/draws?mood={{ _.mood }}",
+      "description": "Resposta esperada: HTTP 201; 404 sem candidatos; 502/503/504 externos. Grava um resultado no histórico pessoal, não adiciona à biblioteca. Exige internet e MAL_CLIENT_ID no backend.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 19,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_20__",
+      "_type": "request",
+      "parentId": "__request_group_3__",
+      "name": "19 Sorteio global sem filtro opcional",
+      "method": "POST",
+      "url": "{{ _.base_url }}/draws",
+      "description": "Resposta esperada: HTTP 201; 502/503/504 externos. Sem JSON e sem filtro. Grava histórico; não execute em lote se não quiser registros adicionais.",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 20,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    },
+    {
+      "_id": "__request_21__",
+      "_type": "request",
+      "parentId": "__request_group_3__",
+      "name": "20 Mood inválido — 400",
+      "method": "POST",
+      "url": "{{ _.base_url }}/draws?mood=INVALID_MOOD",
+      "description": "Resposta esperada: HTTP 400. ",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{ _.frontend_origin }}",
+          "disabled": false
+        }
+      ],
+      "parameters": [],
+      "body": {},
+      "authentication": {
+        "type": "basic",
+        "username": "{{ _.api_email }}",
+        "password": "{{ _.api_password }}",
+        "disabled": false
+      },
+      "metaSortKey": 21,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingFollowRedirects": "off",
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingRenderRequestBody": true
+    }
+  ]
+}
